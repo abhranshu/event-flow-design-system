@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import EventCard from './EventCard';
 import CategoryFilter from './CategoryFilter';
 
@@ -67,6 +68,7 @@ const categories = [...new Set(eventsData.map((event) => event.category))];
 
 const FeaturedEvents = () => {
   const [activeCategory, setActiveCategory] = useState("all");
+  const navigate = useNavigate();
   
   // Filter events based on active category
   const filteredEvents = activeCategory === "all" 
@@ -81,7 +83,11 @@ const FeaturedEvents = () => {
             <h2 className="text-3xl font-bold mb-2">Featured Events</h2>
             <p className="text-gray-600">Discover upcoming events you might like</p>
           </div>
-          <Button variant="link" className="text-event-purple">
+          <Button 
+            variant="link" 
+            className="text-event-purple"
+            onClick={() => navigate("/events")}
+          >
             View All Events
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />

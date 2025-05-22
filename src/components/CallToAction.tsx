@@ -1,9 +1,28 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
 
 const CallToAction = () => {
+  const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    navigate("/create-event");
+    toast({
+      title: "Get Started",
+      description: "Create your first event in minutes!",
+    });
+  };
+
+  const handleLearnMore = () => {
+    navigate("/about");
+    toast({
+      title: "Learn More",
+      description: "Discover how our platform can help you organize successful events.",
+    });
+  };
+
   return (
     <section className="py-16 bg-event-light">
       <div className="container mx-auto px-4">
@@ -15,10 +34,10 @@ const CallToAction = () => {
                 Create and manage your events with our easy-to-use platform. Reach your audience and sell tickets effortlessly.
               </p>
               <div className="space-y-3 md:space-y-0 md:space-x-3 flex flex-col md:flex-row">
-                <Button className="btn-primary" size="lg">
+                <Button className="btn-primary" size="lg" onClick={handleGetStarted}>
                   Get Started
                 </Button>
-                <Button variant="outline" size="lg">
+                <Button variant="outline" size="lg" onClick={handleLearnMore}>
                   Learn More
                 </Button>
               </div>

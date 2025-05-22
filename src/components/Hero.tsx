@@ -1,10 +1,22 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/events?search=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("");
+    }
+  };
+
   return (
     <section className="hero-pattern py-16 md:py-24 overflow-hidden">
       <div className="container mx-auto px-4">
@@ -21,20 +33,37 @@ const Hero = () => {
               Discover thousands of events near you or create your own and connect with people who share your interests.
             </p>
             
-            <div className="relative max-w-md mx-auto md:mx-0 mb-8">
+            <form onSubmit={handleSearch} className="relative max-w-md mx-auto md:mx-0 mb-8">
               <Input
                 type="text"
                 placeholder="Search events, workshops, concerts..."
                 className="pr-16 pl-5 py-6 shadow-lg rounded-full border-0"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Button className="absolute right-1 top-1 rounded-full h-10 w-10 p-0 btn-primary">
+              <Button 
+                type="submit" 
+                className="absolute right-1 top-1 rounded-full h-10 w-10 p-0 btn-primary"
+              >
                 <Search className="h-5 w-5" />
               </Button>
-            </div>
+            </form>
             
             <div className="flex flex-wrap gap-4 justify-center md:justify-start">
-              <Button className="btn-primary" size="lg">Browse Events</Button>
-              <Button variant="outline" size="lg">Host Event</Button>
+              <Button 
+                className="btn-primary" 
+                size="lg"
+                onClick={() => navigate("/events")}
+              >
+                Browse Events
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg"
+                onClick={() => navigate("/create-event")}
+              >
+                Host Event
+              </Button>
             </div>
           </div>
           

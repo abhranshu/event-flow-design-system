@@ -2,12 +2,23 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Menu, Search, X } from "lucide-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/events?search=${encodeURIComponent(searchQuery)}`);
+      setIsSearchOpen(false);
+      setSearchQuery("");
+    }
+  };
 
   return (
     <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
@@ -28,14 +39,17 @@ const Navbar = () => {
         
         <div className="flex items-center gap-4">
           {isSearchOpen ? (
-            <div className="relative animate-fade-in">
+            <form onSubmit={handleSearch} className="relative animate-fade-in">
               <Input 
                 type="text" 
                 placeholder="Search events..." 
                 className="w-[200px] lg:w-[300px]"
-                autoFocus 
+                autoFocus
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
               <Button
+                type="button"
                 variant="ghost"
                 size="icon"
                 className="absolute right-0 top-0"
@@ -43,7 +57,7 @@ const Navbar = () => {
               >
                 <X className="h-4 w-4" />
               </Button>
-            </div>
+            </form>
           ) : (
             <Button 
               variant="ghost" 
@@ -56,10 +70,10 @@ const Navbar = () => {
           )}
           
           <div className="hidden sm:block">
-            <Button variant="outline" size="sm" className="mr-2">
+            <Button variant="outline" size="sm" className="mr-2" onClick={() => navigate("/login")}>
               Sign In
             </Button>
-            <Button size="sm" className="btn-primary">
+            <Button size="sm" className="btn-primary" onClick={() => navigate("/signup")}>
               Sign Up
             </Button>
           </div>
@@ -109,10 +123,25 @@ const Navbar = () => {
               About
             </Link>
             <div className="pt-4 flex flex-col sm:flex-row gap-2">
-              <Button variant="outline" size="sm" className="w-full sm:w-auto">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full sm:w-auto"
+                onClick={() => {
+                  navigate("/login");
+                  setIsMenuOpen(false);
+                }}
+              >
                 Sign In
               </Button>
-              <Button size="sm" className="btn-primary w-full sm:w-auto">
+              <Button 
+                size="sm" 
+                className="btn-primary w-full sm:w-auto"
+                onClick={() => {
+                  navigate("/signup");
+                  setIsMenuOpen(false);
+                }}
+              >
                 Sign Up
               </Button>
             </div>

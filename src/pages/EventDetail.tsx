@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -9,60 +9,105 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { toast } from "@/hooks/use-toast";
 
 // Sample event data - in a real app this would come from an API
-const eventData = {
-  id: "1",
-  title: "Tech Summit 2025",
-  date: "June 15-17, 2025",
-  time: "9:00 AM - 6:00 PM",
-  location: "Moscone Center, San Francisco, CA",
-  category: "Tech",
-  image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
-  price: "$299",
-  organizer: "TechCorp Inc.",
-  attendees: 1240,
-  description: "Join us for the biggest tech summit of 2025. Connect with industry leaders, discover cutting-edge innovations, and expand your professional network. The three-day event will feature keynotes from top tech executives, hands-on workshops, and exclusive networking events.",
-  schedule: [
-    {
-      day: "Day 1",
-      events: [
-        { time: "9:00 AM", title: "Registration & Breakfast" },
-        { time: "10:00 AM", title: "Opening Keynote: The Future of Technology" },
-        { time: "12:00 PM", title: "Lunch Break" },
-        { time: "1:30 PM", title: "Panel Discussion: AI and Machine Learning" },
-        { time: "3:30 PM", title: "Workshop: Cloud Computing Solutions" },
-        { time: "5:30 PM", title: "Networking Reception" }
-      ]
-    },
-    {
-      day: "Day 2",
-      events: [
-        { time: "9:00 AM", title: "Breakfast" },
-        { time: "10:00 AM", title: "Keynote: Cybersecurity in 2025" },
-        { time: "12:00 PM", title: "Lunch Break" },
-        { time: "1:30 PM", title: "Workshop: Blockchain Applications" },
-        { time: "3:30 PM", title: "Panel: Startup Ecosystem" },
-        { time: "6:00 PM", title: "Gala Dinner" }
-      ]
-    },
-    {
-      day: "Day 3",
-      events: [
-        { time: "9:00 AM", title: "Breakfast" },
-        { time: "10:00 AM", title: "Workshop: Data Analytics" },
-        { time: "12:00 PM", title: "Lunch Break" },
-        { time: "1:30 PM", title: "Closing Keynote: Tech Trends" },
-        { time: "3:30 PM", title: "Networking & Farewell" }
-      ]
-    }
-  ]
+const eventsDataMap = {
+  "1": {
+    id: "1",
+    title: "Tech Summit 2025",
+    date: "June 15-17, 2025",
+    time: "9:00 AM - 6:00 PM",
+    location: "Moscone Center, San Francisco, CA",
+    category: "Tech",
+    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
+    price: "$299",
+    organizer: "TechCorp Inc.",
+    attendees: 1240,
+    description: "Join us for the biggest tech summit of 2025. Connect with industry leaders, discover cutting-edge innovations, and expand your professional network. The three-day event will feature keynotes from top tech executives, hands-on workshops, and exclusive networking events.",
+    schedule: [
+      {
+        day: "Day 1",
+        events: [
+          { time: "9:00 AM", title: "Registration & Breakfast" },
+          { time: "10:00 AM", title: "Opening Keynote: The Future of Technology" },
+          { time: "12:00 PM", title: "Lunch Break" },
+          { time: "1:30 PM", title: "Panel Discussion: AI and Machine Learning" },
+          { time: "3:30 PM", title: "Workshop: Cloud Computing Solutions" },
+          { time: "5:30 PM", title: "Networking Reception" }
+        ]
+      },
+      {
+        day: "Day 2",
+        events: [
+          { time: "9:00 AM", title: "Breakfast" },
+          { time: "10:00 AM", title: "Keynote: Cybersecurity in 2025" },
+          { time: "12:00 PM", title: "Lunch Break" },
+          { time: "1:30 PM", title: "Workshop: Blockchain Applications" },
+          { time: "3:30 PM", title: "Panel: Startup Ecosystem" },
+          { time: "6:00 PM", title: "Gala Dinner" }
+        ]
+      },
+      {
+        day: "Day 3",
+        events: [
+          { time: "9:00 AM", title: "Breakfast" },
+          { time: "10:00 AM", title: "Workshop: Data Analytics" },
+          { time: "12:00 PM", title: "Lunch Break" },
+          { time: "1:30 PM", title: "Closing Keynote: Tech Trends" },
+          { time: "3:30 PM", title: "Networking & Farewell" }
+        ]
+      }
+    ]
+  },
+  "2": {
+    id: "2",
+    title: "Annual Music Festival",
+    date: "July 10, 2025",
+    time: "2:00 PM - 11:00 PM",
+    location: "Zilker Park, Austin, TX",
+    category: "Music",
+    image: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
+    price: "$149",
+    organizer: "Austin Events Co.",
+    attendees: 5000,
+    description: "Experience the largest music festival in Austin with performances from top artists across multiple genres. Enjoy a full day of music, food, and fun activities in the beautiful Zilker Park.",
+    schedule: [
+      {
+        day: "Main Event",
+        events: [
+          { time: "2:00 PM", title: "Gates Open" },
+          { time: "3:00 PM", title: "Opening Acts" },
+          { time: "5:00 PM", title: "Local Artists Showcase" },
+          { time: "7:00 PM", title: "Supporting Acts" },
+          { time: "9:00 PM", title: "Headliner Performance" }
+        ]
+      }
+    ]
+  }
 };
 
 const EventDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
   const [isSaved, setIsSaved] = useState(false);
+  const navigate = useNavigate();
+  const [eventData, setEventData] = useState(eventsDataMap["1"]); // Default to first event
+
+  useEffect(() => {
+    // In a real app, this would be an API call
+    if (id && eventsDataMap[id as keyof typeof eventsDataMap]) {
+      setEventData(eventsDataMap[id as keyof typeof eventsDataMap]);
+    } else {
+      // If event not found, redirect to events page
+      toast({
+        title: "Event not found",
+        description: "The event you're looking for doesn't exist.",
+        variant: "destructive"
+      });
+      navigate("/events");
+    }
+  }, [id, navigate]);
 
   const handleSave = () => {
     setIsSaved(!isSaved);
@@ -75,9 +120,27 @@ const EventDetail = () => {
   };
 
   const handleShare = () => {
+    // In a real app, this would copy to clipboard
+    navigator.clipboard.writeText(window.location.href);
     toast({
       title: "Share link copied!",
       description: "Event link has been copied to your clipboard.",
+    });
+  };
+
+  const handleRegister = () => {
+    toast({
+      title: "Registration in progress",
+      description: `You are registering for ${eventData.title}. Please complete payment to confirm.`,
+    });
+    // In a real app, this would navigate to checkout
+    setTimeout(() => navigate("/checkout"), 1500);
+  };
+
+  const handleContactOrganizer = () => {
+    toast({
+      title: "Contact Request Sent",
+      description: `Your message to ${eventData.organizer} has been sent. They will respond shortly.`,
     });
   };
 
@@ -202,7 +265,7 @@ const EventDetail = () => {
                   <p className="text-gray-700">
                     TechCorp Inc. is a leading technology events organizer, specializing in conferences, summits, and workshops that bring together professionals from across the tech industry.
                   </p>
-                  <Button variant="outline" className="mt-4">Contact Organizer</Button>
+                  <Button variant="outline" className="mt-4" onClick={handleContactOrganizer}>Contact Organizer</Button>
                 </TabsContent>
               </Tabs>
             </div>
@@ -223,7 +286,12 @@ const EventDetail = () => {
                   </div>
                 </div>
                 
-                <Button className="w-full py-6 mb-4 btn-primary">Register Now</Button>
+                <Button 
+                  className="w-full py-6 mb-4 btn-primary" 
+                  onClick={handleRegister}
+                >
+                  Register Now
+                </Button>
                 
                 <div className="flex gap-2">
                   <Button 
