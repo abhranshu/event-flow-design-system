@@ -70,10 +70,19 @@ const Navbar = () => {
           )}
           
           <div className="hidden sm:block">
-            <Button variant="outline" size="sm" className="mr-2" onClick={() => navigate("/login")}>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="mr-2" 
+              onClick={() => navigate("/login")}
+            >
               Sign In
             </Button>
-            <Button size="sm" className="btn-primary" onClick={() => navigate("/signup")}>
+            <Button 
+              size="sm" 
+              className="btn-primary" 
+              onClick={() => navigate("/signup")}
+            >
               Sign Up
             </Button>
           </div>
