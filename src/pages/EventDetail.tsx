@@ -11,14 +11,30 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { toast } from "@/hooks/use-toast";
 
+// Define the Event type
+type Event = {
+  id: string;
+  title: string;
+  date: string;
+  time: string;
+  location: string;
+  category: string;
+  image: string;
+  price: string;
+  organizer: string;
+  attendees: number;
+  description: string;
+  schedule: { day: string; events: { time: string; title: string; }[]; }[];
+};
+
 // Sample event data - in a real app this would come from an API
-const eventsDataMap = {
+const eventsDataMap: Record<string, Event> = {
   "1": {
     id: "1",
     title: "Tech Summit 2025",
     date: "June 15-17, 2025",
     time: "9:00 AM - 6:00 PM",
-    location: "Moscone Center, San Francisco, CA",
+    location: "Oberoi Hotel, Mumbai, India",
     category: "Tech",
     image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
     price: "$299",
@@ -62,16 +78,16 @@ const eventsDataMap = {
   },
   "2": {
     id: "2",
-    title: "Annual Music Festival",
+    title: "Sunburn Music Festival",
     date: "July 10, 2025",
     time: "2:00 PM - 11:00 PM",
-    location: "Zilker Park, Austin, TX",
+    location: "Taj Skyline, Ahemdabad, India",
     category: "Music",
     image: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
     price: "$149",
     organizer: "Austin Events Co.",
     attendees: 5000,
-    description: "Experience the largest music festival in Austin with performances from top artists across multiple genres. Enjoy a full day of music, food, and fun activities in the beautiful Zilker Park.",
+    description: "Experience the largest music festival in Ahemdabad with performances from top artists across multiple genres. Enjoy a full day of music, food, and fun activities in the beautiful Zilker Park.",
     schedule: [
       {
         day: "Main Event",
@@ -81,6 +97,78 @@ const eventsDataMap = {
           { time: "5:00 PM", title: "Local Artists Showcase" },
           { time: "7:00 PM", title: "Supporting Acts" },
           { time: "9:00 PM", title: "Headliner Performance" }
+        ]
+      }
+    ]
+  },
+  "3": {
+       id: "3",
+    title: "Design Workshop",
+    date: "August 5, 2025",
+    time: "2:00 PM - 6:00 PM",
+    location: "Chandni Chowk,Delhi, India",
+    category: "Workshop",
+    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    price: "Free",
+    organizer: "Austin Events Co.",
+    attendees: 5000,
+    description: "Experience the largest music festival in Austin with performances from top artists across multiple genres. Enjoy a full day of music, food, and fun activities in the beautiful Zilker Park.",
+    schedule: [
+      {
+        day: "Main Event",
+        events: [
+          { time: "2:00 PM", title: "Gates Open" },
+          { time: "3:00 PM", title: "Opening Acts" },
+          { time: "5:00 PM", title: "Local Project Showcase" },
+          { time: "7:00 PM", title: "Project Demonstration" },
+          { time: "9:00 PM", title: "Winner Announcement" }
+        ]
+      }
+    ]
+  },
+  "4": {
+    id: "4",
+    title: "Startup Networking",
+    date: "September 12, 2025",
+    time: "2:00 PM - 6:00 PM",
+    location: "Bengaluru, Karnataka, India",
+    category: "Business",
+    image: "https://images.unsplash.com/photo-1556761175-b413da4baf72?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    price: "49",
+    organizer: "Startup Connect",
+    attendees: 350,
+    description: "A networking event for startups, entrepreneurs, and investors to connect, share ideas, and explore collaboration opportunities.",
+    schedule: [
+      {
+        day: "Main Event",
+        events: [
+          { time: "2:00 PM", title: "Registration & Welcome" },
+          { time: "3:00 PM", title: "Panel Discussion: Startup Success Stories" },
+          { time: "4:30 PM", title: "Networking Session" },
+          { time: "5:30 PM", title: "Closing Remarks" }
+        ]
+      }
+    ]
+  },
+    "5": {
+    id: "5",
+    title: "Photography Exhibition",
+    date: "October 8-10, 2025",
+    time: "10:00 AM - 6:00 PM",
+    location: "Chicago, IL",
+    category: "Arts",
+    image: "https://images.unsplash.com/photo-1594122230689-45899d9e6f69?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    price: "25",
+    organizer: "Chicago Arts Association",
+    attendees: 200,
+    description: "A showcase of contemporary photography from emerging artists.",
+    schedule: [
+      {
+        day: "Exhibition Days",
+        events: [
+          { time: "10:00 AM", title: "Exhibition Opens" },
+          { time: "2:00 PM", title: "Artist Meet & Greet" },
+          { time: "6:00 PM", title: "Exhibition Closes" }
         ]
       }
     ]
@@ -107,7 +195,7 @@ const EventDetail = () => {
       });
       navigate("/events");
     }
-  }, [id, navigate]);
+  }, [id, navigate, toast]);
 
   const handleSave = () => {
     setIsSaved(!isSaved);
