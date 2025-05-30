@@ -2,55 +2,75 @@ import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import EventCard from '@/components/EventCard';
-import { useQuery } from '@tanstack/react-query';
-import { Event } from '@/types/event';
 
-const API_URL = 'http://localhost:5000/api';
+// Mock data for events
+const mockEvents = [
+  {
+    _id: "1",
+    title: "Tech Summit 2025",
+    date: "2025-06-15",
+    location: "San Francisco, CA",
+    category: "Tech",
+    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    price: "299",
+    isFeatured: true
+  },
+  {
+    _id: "2",
+    title: "Annual Music Festival",
+    date: "2025-07-10",
+    location: "Austin, TX",
+    category: "Music",
+    image: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    price: "149",
+    isFeatured: true
+  },
+  {
+    _id: "3",
+    title: "Design Workshop",
+    date: "2025-08-05",
+    location: "New York, NY",
+    category: "Workshop",
+    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    price: "Free",
+    isFeatured: true
+  },
+  {
+    _id: "4",
+    title: "Startup Networking",
+    date: "2025-09-12",
+    location: "Boston, MA",
+    category: "Business",
+    image: "https://images.unsplash.com/photo-1556761175-b413da4baf72?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    price: "49",
+    isFeatured: true
+  },
+  {
+    _id: "5",
+    title: "Photography Exhibition",
+    date: "2025-10-08",
+    location: "Chicago, IL",
+    category: "Arts",
+    image: "https://images.unsplash.com/photo-1594122230689-45899d9e6f69?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    price: "25",
+    isFeatured: true
+  },
+  {
+    _id: "6",
+    title: "Food & Wine Festival",
+    date: "2025-11-05",
+    location: "Napa Valley, CA",
+    category: "Food",
+    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    price: "75",
+    isFeatured: true
+  }
+];
 
 const Events = () => {
-  // Fetch events using React Query
-  const { data: events, isLoading, error } = useQuery<Event[]>({
-    queryKey: ['events'],
-    queryFn: async () => {
-      const response = await fetch(`${API_URL}/events`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    }
-  });
-  
-  // Filter for featured events only
-  const featuredEvents = events?.filter(event => event.isFeatured) || [];
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-grow flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-event-purple mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading featured events...</p>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-grow flex items-center justify-center">
-          <div className="text-center text-red-600">
-            <p>Error loading events. Please try again later.</p>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
+  // Use mock data instead of API call
+  const events = mockEvents;
+  const featuredEvents = events.filter(event => event.isFeatured);
 
   return (
     <div className="min-h-screen flex flex-col">

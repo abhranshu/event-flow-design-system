@@ -1,202 +1,141 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-
-const API_URL = 'http://localhost:5000/api';
 
 const CreateEvent = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    title: '',
-    date: '',
-    location: '',
-    category: '',
-    image: '',
-    price: '',
-    description: ''
-  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const createEventMutation = useMutation({
-    mutationFn: async (eventData: any) => {
-      const response = await fetch(`${API_URL}/events`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(eventData),
-      });
-      if (!response.ok) {
-        throw new Error('Failed to create event');
-      }
-      return response.json();
-    },
-    onSuccess: () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // In a real app, this would send data to your backend
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       toast({
         title: "Event Created!",
         description: "Your event has been successfully created.",
       });
+      
       navigate('/events');
-    },
-    onError: (error) => {
+    } catch (error) {
       toast({
         title: "Error",
         description: "Failed to create event. Please try again.",
         variant: "destructive",
       });
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    createEventMutation.mutate({
-      ...formData,
-      price: Number(formData.price),
-      date: new Date(formData.date).toISOString(),
-    });
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      
-      <main className="flex-grow py-16">
-        <div className="container mx-auto px-4 max-w-2xl">
-          <h1 className="text-3xl font-bold mb-8">Create New Event</h1>
-          
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="title">Event Title</Label>
-              <Input
-                id="title"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                placeholder="Enter event title"
-                required
-              />
-            </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="max-w-2xl mx-auto">
+        <h1 className="text-3xl font-bold mb-8">Create New Event</h1>
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <label htmlFor="title" className="text-sm font-medium">
+              Event Title
+            </label>
+            <Input
+              id="title"
+              name="title"
+              placeholder="Enter event title"
+              required
+            />
+          </div>
 
+          <div className="space-y-2">
+            <label htmlFor="description" className="text-sm font-medium">
+              Description
+            </label>
+            <Textarea
+              id="description"
+              name="description"
+              placeholder="Describe your event"
+              required
+              className="min-h-[150px]"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="date">Event Date</Label>
+              <label htmlFor="date" className="text-sm font-medium">
+                Date
+              </label>
               <Input
                 id="date"
                 name="date"
-                type="datetime-local"
-                value={formData.date}
-                onChange={handleChange}
+                type="date"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="location">Location</Label>
+              <label htmlFor="time" className="text-sm font-medium">
+                Time
+              </label>
               <Input
-                id="location"
-                name="location"
-                value={formData.location}
-                onChange={handleChange}
-                placeholder="Enter event location"
+                id="time"
+                name="time"
+                type="time"
                 required
               />
             </div>
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
-              <select
-                id="category"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                className="w-full rounded-md border border-input bg-background px-3 py-2"
-                required
-              >
-                <option value="">Select a category</option>
-                <option value="Tech">Tech</option>
-                <option value="Music">Music</option>
-                <option value="Business">Business</option>
-                <option value="Arts">Arts</option>
-                <option value="Food">Food</option>
-                <option value="Workshop">Workshop</option>
-              </select>
-            </div>
+          <div className="space-y-2">
+            <label htmlFor="location" className="text-sm font-medium">
+              Location
+            </label>
+            <Input
+              id="location"
+              name="location"
+              placeholder="Enter event location"
+              required
+            />
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="image">Image URL</Label>
-              <Input
-                id="image"
-                name="image"
-                value={formData.image}
-                onChange={handleChange}
-                placeholder="Enter image URL"
-                required
-              />
-            </div>
+          <div className="space-y-2">
+            <label htmlFor="price" className="text-sm font-medium">
+              Price
+            </label>
+            <Input
+              id="price"
+              name="price"
+              type="number"
+              placeholder="Enter ticket price"
+              min="0"
+              step="0.01"
+            />
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="price">Price</Label>
-              <Input
-                id="price"
-                name="price"
-                type="number"
-                min="0"
-                step="0.01"
-                value={formData.price}
-                onChange={handleChange}
-                placeholder="Enter event price"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="Enter event description"
-                className="min-h-[100px]"
-                required
-              />
-            </div>
-
-            <div className="flex gap-4">
-              <Button
-                type="submit"
-                className="btn-primary flex-1"
-                disabled={createEventMutation.isPending}
-              >
-                {createEventMutation.isPending ? 'Creating...' : 'Create Event'}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                className="flex-1"
-                onClick={() => navigate('/events')}
-              >
-                Cancel
-              </Button>
-            </div>
-          </form>
-        </div>
-      </main>
-      
-      <Footer />
+          <div className="flex gap-4 pt-4">
+            <Button
+              type="submit"
+              className="btn-primary"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Creating..." : "Create Event"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate('/events')}
+            >
+              Cancel
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
