@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +14,10 @@ const Hero = () => {
       navigate(`/events?search=${encodeURIComponent(searchQuery)}`);
       setSearchQuery("");
     }
+  };
+
+  const handleBrowseEvents = () => {
+    navigate('/events');
   };
 
   return (
@@ -53,7 +56,7 @@ const Hero = () => {
               <Button 
                 className="btn-primary" 
                 size="lg"
-                onClick={() => navigate("/events")}
+                onClick={handleBrowseEvents}
               >
                 Browse Events
               </Button>
